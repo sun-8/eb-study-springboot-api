@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.api.mapper.CategoryMapper">
+
+    <!-- 카테고리 목록 -->
+    <select id="getCategoryAllList"
+            resultType="com.study.api.model.out.category.CategoryListDTO">
+        SELECT
+            ID,
+            NAME
+        FROM CATEGORY
+        ORDER BY ID ASC
+    </select>
+
+</mapper>
