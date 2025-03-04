@@ -1,0 +1,20 @@
+
+server:
+  port: 8889
+
+spring:
+  application:
+    name: boardApi
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ebrainsoft_study
+    username: ebsoft
+    password: ebsoft
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+system:
+  upload-path: D:\\test\\files\\
