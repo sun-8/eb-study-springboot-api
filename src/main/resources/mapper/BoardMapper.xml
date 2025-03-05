@@ -34,9 +34,7 @@
             parameterType="com.study.api.model.process.BoardSearchProcessDTO">
         SELECT
             (SELECT NAME FROM CATEGORY WHERE ID = CATEGORY_ID) AS CATEGORY_NAME,
-            IF((FILE_1_ID IS NOT NULL AND FILE_1_ID != '') OR
-               (FILE_2_ID IS NOT NULL AND FILE_2_ID != '') OR
-               (FILE_3_ID IS NOT NULL AND FILE_3_ID != ''), 'YES', 'NO') AS FILE_YES_OR_NO,
+            IF((FILE_ID IS NOT NULL AND FILE_ID != ''), 'YES', 'NO') AS FILE_YES_OR_NO,
             USER_NAME,
             TITLE,
             VIEWS,
