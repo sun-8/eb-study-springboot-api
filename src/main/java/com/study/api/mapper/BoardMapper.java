@@ -1,6 +1,7 @@
 package com.study.api.mapper;
 
 import com.study.api.model.out.board.BoardListDTO;
+import com.study.api.model.process.BoardInfoProcessDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -22,5 +23,12 @@ public interface BoardMapper {
      * @return List<BoardListDTO>
      */
     List<BoardListDTO> getBoardSearchList(BoardSearchProcessDTO boardSearchProcessDTO);
+
+    /**
+     * 게시판 등록
+     * @param boardInfoProcessDTO
+     * @return int
+     */
+    int registerBoard(BoardInfoProcessDTO boardInfoProcessDTO);
 
 }

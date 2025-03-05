@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.api.mapper.MultiFileMapper">
+
+    <!-- 파일 조회 -->
+    <select id="getMultiFile"
+            parameterType="com.study.api.model.process.MultiFileProcessDTO"
+            resultType="com.study.api.model.process.MultiFileProcessDTO">
+        SELECT
+            FILE_ID,
+            FILE_FOLDER,
+            FILE_NAME,
+            FILE_PATH,
+            FILE_SIZE,
+            FILE_TYPE,
+            FILE_EXTEND,
+            REGISTER_DATETIME,
+            MODIFY_DATETIME
+        FROM MULTI_FILE
+        WHERE FILE_ID = #{fileId}
+    </select>
+
+    <!-- 업로드 파일 저장 -->
+    <insert id="registerMultiFile"
+            parameterType="com.study.api.model.process.MultiFileProcessDTO">
+        INSERT INTO MULTI_FILE
+        (
+            FILE_ID,
+            FILE_FOLDER,
+            FILE_NAME,
+            FILE_PATH,
+            FILE_SIZE,
+            FILE_TYPE,
+            FILE_EXTEND,
+            REGISTER_DATETIME,
+            MODIFY_DATETIME
+        )
+        VALUES
+        (
+            #{fileId},
+            #{fileFolder},
+            #{fileName},
+            #{filePath},
+            #{fileSize},
+            #{fileType},
+            #{fileExtend},
+            NOW(),
+            NULL
+        )
+    </insert>
+
+</mapper>

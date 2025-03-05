@@ -47,4 +47,35 @@
         LIMIT #{offset}, #{pageSize}
     </select>
 
+    <!-- 게시글 등록 -->
+    <insert id="registerBoard"
+            parameterType="com.study.api.model.process.MultiFileProcessDTO">
+        INSERT INTO BOARD
+        (
+            ID,
+            CATEGORY_ID,
+            USER_NAME,
+            PASSWORD,
+            TITLE,
+            CONTENTS,
+            VIEWS,
+            FILE_ID,
+            REGISTER_DATETIME,
+            MODIFY_DATETIME
+        )
+        VALUES
+        (
+            NULL,
+            #{categoryId},
+            #{userName},
+            #{password},
+            #{title},
+            #{contents},
+            0,
+            #{fileId},
+            NOW(),
+            NULL
+        )
+    </insert>
+
 </mapper>
