@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class CategoryListOutDTO {
     @JsonProperty("id")
-    private int id;
+    private String id;
 
     @JsonProperty("name")
     private String name;
