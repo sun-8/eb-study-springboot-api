@@ -3,11 +3,12 @@ package com.study.api.controller;
 import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.out.BoardSearchOutDTO;
 import com.study.api.model.out.CategoryListOutDTO;
-import com.study.api.model.out.ResponseDTO;
 import com.study.api.service.BoardService;
 import com.study.api.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,11 +49,11 @@ public class BoardController {
      * @return result
      */
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseDTO<BoardSearchOutDTO> list(@RequestParam(required = false, defaultValue = "2025-01-01") String searchRegisterDateStart,
-                                               @RequestParam(required = false, defaultValue = "2025-12-31") String searchRegisterDateEnd,
-                                               @RequestParam(required = false) String searchCategory,
-                                               @RequestParam(required = false) String searchWord,
-                                               @RequestParam(defaultValue = "1") int nowPage) {
+    public ResponseEntity<BoardSearchOutDTO> list(@RequestParam(required = false, defaultValue = "2025-01-01") String searchRegisterDateStart,
+                                                  @RequestParam(required = false, defaultValue = "2025-12-31") String searchRegisterDateEnd,
+                                                  @RequestParam(required = false) String searchCategory,
+                                                  @RequestParam(required = false) String searchWord,
+                                                  @RequestParam(defaultValue = "1") int nowPage) {
 
         BoardSearchInDTO boardSearchInDTO = new BoardSearchInDTO();
         boardSearchInDTO.setSearchRegisterDateStart(searchRegisterDateStart);
@@ -63,11 +64,7 @@ public class BoardController {
 
         BoardSearchOutDTO outDTO = boardService.boardSearch(boardSearchInDTO);
 
-        ResponseDTO<BoardSearchOutDTO> result = new ResponseDTO<>();
-        result.setResponseCode("0000");
-        result.setResponseMessage("success");
-        result.setData(outDTO);
-        return result;
+        return new ResponseEntity<>(outDTO, HttpStatus.OK);
     }
 
     /**
@@ -75,15 +72,11 @@ public class BoardController {
      * @return result
      */
     @GetMapping(value = "categoryList", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseDTO<List<CategoryListOutDTO>> categoryList() {
+    public ResponseEntity<List<CategoryListOutDTO>> categoryList() {
 
         List<CategoryListOutDTO> outDTO = categoryService.getCategoryAllList();
 
-        ResponseDTO<List<CategoryListOutDTO>> result = new ResponseDTO<>();
-        result.setResponseCode("0000");
-        result.setResponseMessage("success");
-        result.setData(outDTO);
-        return result;
+        return new ResponseEntity<>(outDTO, HttpStatus.OK);
     }
 
 }
