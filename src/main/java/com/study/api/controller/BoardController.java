@@ -2,8 +2,10 @@ package com.study.api.controller;
 
 import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.out.BoardSearchOutDTO;
+import com.study.api.model.out.CategoryListOutDTO;
 import com.study.api.model.out.ResponseDTO;
 import com.study.api.service.BoardService;
+import com.study.api.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -20,6 +23,8 @@ public class BoardController {
 
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private CategoryService categoryService;
 
     /* todo.
         @JsonProperty와 @ModelAttribute 상호작용 안됨.
@@ -59,6 +64,22 @@ public class BoardController {
         BoardSearchOutDTO outDTO = boardService.boardSearch(boardSearchInDTO);
 
         ResponseDTO<BoardSearchOutDTO> result = new ResponseDTO<>();
+        result.setResponseCode("0000");
+        result.setResponseMessage("success");
+        result.setData(outDTO);
+        return result;
+    }
+
+    /**
+     * 카테고리 목록 조회
+     * @return result
+     */
+    @GetMapping(value = "categoryList", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseDTO<List<CategoryListOutDTO>> categoryList() {
+
+        List<CategoryListOutDTO> outDTO = categoryService.getCategoryAllList();
+
+        ResponseDTO<List<CategoryListOutDTO>> result = new ResponseDTO<>();
         result.setResponseCode("0000");
         result.setResponseMessage("success");
         result.setData(outDTO);
