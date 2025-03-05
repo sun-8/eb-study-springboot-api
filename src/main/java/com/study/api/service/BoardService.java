@@ -3,7 +3,7 @@ package com.study.api.service;
 import com.study.api.mapper.BoardMapper;
 import com.study.api.model.out.board.BoardListDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
-import com.study.api.model.out.category.CategoryListDTO;
+import com.study.api.model.out.CategoryListOutDTO;
 import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.out.BoardSearchOutDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class BoardService {
             카테고리 목록은 따로 조회하는 것이 좋았을까?
         * */
         // 카테고리 목록
-        List<CategoryListDTO> categoryList = categoryService.getCategoryAllList();
+        List<CategoryListOutDTO> categoryList = categoryService.getCategoryAllList();
         outDTO.setCategoryList(categoryList);
 
         /* todo.

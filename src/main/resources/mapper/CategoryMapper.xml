@@ -5,7 +5,7 @@
 
     <!-- 카테고리 목록 -->
     <select id="getCategoryAllList"
-            resultType="com.study.api.model.out.category.CategoryListDTO">
+            resultType="com.study.api.model.out.CategoryListOutDTO">
         SELECT
             ID,
             NAME

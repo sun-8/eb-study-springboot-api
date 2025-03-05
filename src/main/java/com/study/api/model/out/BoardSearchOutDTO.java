@@ -2,7 +2,6 @@ package com.study.api.model.out;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.study.api.model.out.board.BoardListDTO;
-import com.study.api.model.out.category.CategoryListDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public class BoardSearchOutDTO {
     // 카테고리 목록
     @JsonProperty("category_list")
-    private List<CategoryListDTO> categoryList;
+    private List<CategoryListOutDTO> categoryList;
 
     // 페이지네이션
     @JsonProperty("now_page")

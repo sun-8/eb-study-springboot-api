@@ -1,10 +1,10 @@
-package com.study.api.model.out.category;
+package com.study.api.model.out;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class CategoryListDTO {
+public class CategoryListOutDTO {
     @JsonProperty("id")
     private int id;
 
