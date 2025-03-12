@@ -40,13 +40,6 @@ public class BoardService {
         BoardSearchOutDTO outDTO = new BoardSearchOutDTO();
 
         /* todo.
-            카테고리 목록은 따로 조회하는 것이 좋았을까?
-        * */
-        // 카테고리 목록
-        List<CategoryListOutDTO> categoryList = categoryService.getCategoryAllList();
-        outDTO.setCategoryList(categoryList);
-
-        /* todo.
             아래 세 가지 DTO로 분리
             inDTO : 데이터 요청 모음
             processDTO : 데이터 처리를 위한 변수 모음

@@ -10,9 +10,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class BoardSearchOutDTO {
-    // 카테고리 목록
-    @JsonProperty("category_list")
-    private List<CategoryListOutDTO> categoryList;
 
     // 페이지네이션
     @JsonProperty("now_page")
