@@ -4,6 +4,7 @@ import com.study.api.config.ResponseDTO;
 import com.study.api.mapper.BoardMapper;
 import com.study.api.model.error.BoardFormInsertErrorDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
+import com.study.api.model.mapstruct.BoardMapStruct;
 import com.study.api.model.out.BoardSearchOutDTO;
 import com.study.api.model.out.board.BoardListDTO;
 import com.study.api.model.process.BoardInfoProcessDTO;
@@ -17,12 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Slf4j
 @Service
 public class BoardService {
-    Logger logger = Logger.getLogger(BoardService.class.getName());
 
     @Autowired
     private CategoryService categoryService;
@@ -43,24 +42,24 @@ public class BoardService {
         try{
             // 페이지 계산
             int searchDataCount = this.getBoardSearchCount(boardSearchProcessDTO);
-            boardSearchProcessDTO.setSearchDataCount(searchDataCount);
-            boardSearchProcessDTO.setLastPageBySearchDataCountAndPageSize(searchDataCount, boardSearchProcessDTO.getPageSize());
-
-            // 페이지 정보
-            BoardSearchOutDTO boardSearchOutDTO = new BoardSearchOutDTO();
-            boardSearchOutDTO.setNowPage(boardSearchProcessDTO.getNowPage());
-            boardSearchOutDTO.setSearchDataCount(searchDataCount);
-            boardSearchOutDTO.setLastPage(boardSearchProcessDTO.getLastPage());
-
             // 게시판 목록
             List<BoardListDTO> boardList = this.getBoardSearchList(boardSearchProcessDTO);
-            boardSearchOutDTO.setBoardList(boardList);
+
+            BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
+            boardMapStruct.setSearchDataCount(searchDataCount, boardSearchProcessDTO);
+            boardMapStruct.setLastPageBySearchDataCount(searchDataCount, boardSearchProcessDTO);
+
+            BoardSearchOutDTO boardSearchOutDTO = new BoardSearchOutDTO(boardSearchProcessDTO.getNowPage(),
+                                                                        searchDataCount,
+                                                                        1,
+                                                                        boardSearchProcessDTO.getLastPage(),
+                                                                        boardList);
 
             outDTO.setResponseCode("0000");
             outDTO.setResponseData(boardSearchOutDTO);
 
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
             outDTO.setResponseCode("9999");
             outDTO.setResponseMessage("처리 중 오류가 발생했습니다.");
         }
@@ -105,7 +104,7 @@ public class BoardService {
      * @return
      */
     public int registerBoard(BoardFormInsertInDTO inDTO) {
-        // 데이터 처리 셋팅
+        // 데이터 처리 셋팅 - 이 과정은 controller에서.. map structure
         BoardInfoProcessDTO boardInfoProcessDTO = new BoardInfoProcessDTO();
         boardInfoProcessDTO.setCategoryId(inDTO.getCategoryId());
         boardInfoProcessDTO.setUserName(inDTO.getUserName());

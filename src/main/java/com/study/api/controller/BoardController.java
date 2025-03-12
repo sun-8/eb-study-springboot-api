@@ -3,12 +3,14 @@ package com.study.api.controller;
 import com.study.api.config.ResponseDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardSearchInDTO;
+import com.study.api.model.mapstruct.BoardMapStruct;
 import com.study.api.model.out.BoardSearchOutDTO;
 import com.study.api.model.out.CategoryListOutDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
 import com.study.api.service.BoardService;
 import com.study.api.service.CategoryService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,13 +20,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
+@Slf4j
 @RestController
 @RequestMapping(value = {"/boards/free/*"})
 public class BoardController {
-    Logger logger = Logger.getLogger(BoardController.class.getName());
-
     @Autowired
     private BoardService boardService;
     @Autowired
@@ -38,15 +38,10 @@ public class BoardController {
     @GetMapping(value = "list")
     public ResponseDTO<BoardSearchOutDTO> list(@ModelAttribute BoardSearchInDTO boardSearchInDTO) {
 
+        BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
         int pageSize = 10;
-        BoardSearchProcessDTO boardSearchProcessDTO = new BoardSearchProcessDTO();
-        boardSearchProcessDTO.setSearchRegisterDateStart(boardSearchInDTO.getSearchRegisterDateStart());
-        boardSearchProcessDTO.setSearchRegisterDateEnd(boardSearchInDTO.getSearchRegisterDateEnd());
-        boardSearchProcessDTO.setSearchCategory(boardSearchInDTO.getSearchCategory());
-        boardSearchProcessDTO.setSearchWord(boardSearchInDTO.getSearchWord());
-        boardSearchProcessDTO.setNowPage(boardSearchInDTO.getNowPage());
-        boardSearchProcessDTO.setOffsetByNowPageAndPageSize(boardSearchInDTO.getNowPage(), pageSize);
-        boardSearchProcessDTO.setPageSize(pageSize);
+        BoardSearchProcessDTO boardSearchProcessDTO = boardMapStruct.boardSearchInDtoToBoardSearchProcessDto(boardSearchInDTO, pageSize);
+        boardMapStruct.setOffsetByNowPage(boardSearchInDTO, boardSearchProcessDTO);
 
         ResponseDTO<BoardSearchOutDTO> outDTO = boardService.boardSearch(boardSearchProcessDTO);
 
