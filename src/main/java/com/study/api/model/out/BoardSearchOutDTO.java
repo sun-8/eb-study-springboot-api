@@ -27,9 +27,4 @@ public class BoardSearchOutDTO {
     // 게시판 목록
     @JsonProperty("board_list")
     private List<BoardListDTO> boardList;
-
-    // 검색 적용한 데이터 수와 페이지 크기로 lastPage 셋팅
-    public void setLastPageBySearchDataCountAndPageSize(int searchDataCount, int pageSize) {
-        this.lastPage =(searchDataCount % pageSize == 0) ? searchDataCount / pageSize : searchDataCount / pageSize + 1;
-    }
 }

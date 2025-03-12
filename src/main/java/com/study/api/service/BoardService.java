@@ -1,15 +1,15 @@
 package com.study.api.service;
 
+import com.study.api.config.ResponseDTO;
 import com.study.api.mapper.BoardMapper;
 import com.study.api.model.error.BoardFormInsertErrorDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
-import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.out.BoardSearchOutDTO;
-import com.study.api.model.out.CategoryListOutDTO;
 import com.study.api.model.out.board.BoardListDTO;
 import com.study.api.model.process.BoardInfoProcessDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
 import com.study.api.model.process.MultiFileProcessDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+@Slf4j
 @Service
 public class BoardService {
     Logger logger = Logger.getLogger(BoardService.class.getName());
@@ -32,38 +33,37 @@ public class BoardService {
 
     /**
      * 게시판 목록 조회
-     * @param inDTO
+     * @param boardSearchProcessDTO
      * @return outDTO
      */
-    public BoardSearchOutDTO boardSearch(BoardSearchInDTO inDTO) {
+    public ResponseDTO<BoardSearchOutDTO> boardSearch(BoardSearchProcessDTO boardSearchProcessDTO) {
 
-        BoardSearchOutDTO outDTO = new BoardSearchOutDTO();
+        ResponseDTO<BoardSearchOutDTO> outDTO = new ResponseDTO<>();
 
-        /* todo.
-            아래 세 가지 DTO로 분리
-            inDTO : 데이터 요청 모음
-            processDTO : 데이터 처리를 위한 변수 모음
-            outDTO : 데이터 응답 모음
-        * */
-        // 데이터 처리 셋팅
-        BoardSearchProcessDTO boardSearchProcessDTO = new BoardSearchProcessDTO();
-        int pageSize = 10;
-        boardSearchProcessDTO.setSearchRegisterDateStart(inDTO.getSearchRegisterDateStart());
-        boardSearchProcessDTO.setSearchRegisterDateEnd(inDTO.getSearchRegisterDateEnd());
-        boardSearchProcessDTO.setSearchCategory(inDTO.getSearchCategory());
-        boardSearchProcessDTO.setSearchWord(inDTO.getSearchWord());
-        boardSearchProcessDTO.setOffsetByNowPageAndPageSize(inDTO.getNowPage(), pageSize);
-        boardSearchProcessDTO.setPageSize(pageSize);
+        try{
+            // 페이지 계산
+            int searchDataCount = this.getBoardSearchCount(boardSearchProcessDTO);
+            boardSearchProcessDTO.setSearchDataCount(searchDataCount);
+            boardSearchProcessDTO.setLastPageBySearchDataCountAndPageSize(searchDataCount, boardSearchProcessDTO.getPageSize());
 
-        // 페이지 계산
-        outDTO.setNowPage(inDTO.getNowPage());
-        int searchDataCount = this.getBoardSearchCount(boardSearchProcessDTO);
-        outDTO.setSearchDataCount(searchDataCount);
-        outDTO.setLastPageBySearchDataCountAndPageSize(searchDataCount, pageSize);
+            // 페이지 정보
+            BoardSearchOutDTO boardSearchOutDTO = new BoardSearchOutDTO();
+            boardSearchOutDTO.setNowPage(boardSearchProcessDTO.getNowPage());
+            boardSearchOutDTO.setSearchDataCount(searchDataCount);
+            boardSearchOutDTO.setLastPage(boardSearchProcessDTO.getLastPage());
 
-        // 게시판 목록
-        List<BoardListDTO> boardList = this.getBoardSearchList(boardSearchProcessDTO);
-        outDTO.setBoardList(boardList);
+            // 게시판 목록
+            List<BoardListDTO> boardList = this.getBoardSearchList(boardSearchProcessDTO);
+            boardSearchOutDTO.setBoardList(boardList);
+
+            outDTO.setResponseCode("0000");
+            outDTO.setResponseData(boardSearchOutDTO);
+
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            outDTO.setResponseCode("9999");
+            outDTO.setResponseMessage("처리 중 오류가 발생했습니다.");
+        }
 
         return outDTO;
     }
