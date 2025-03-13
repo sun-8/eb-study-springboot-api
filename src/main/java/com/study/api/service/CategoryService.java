@@ -3,6 +3,7 @@ package com.study.api.service;
 import com.study.api.config.ResponseDTO;
 import com.study.api.mapper.CategoryMapper;
 import com.study.api.model.out.CategoryListOutDTO;
+import com.study.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,13 +30,13 @@ public class CategoryService {
         try {
             List<CategoryListOutDTO> categoryList = categoryMapper.getCategoryAllList();
 
-            outDTO.setResponseCode("0000");
+            outDTO.setResponseCode(Message.SUCCESS_CODE_0000);
             outDTO.setResponseData(categoryList);
 
         } catch (Exception e) {
             log.info(e.getMessage());
-            outDTO.setResponseCode("9999");
-            outDTO.setResponseMessage("처리 중 오류가 발생했습니다.");
+            outDTO.setResponseCode(Message.ERROR_CODE_9999);
+            outDTO.setResponseMessage(Message.ERROR_MESSAGE_9999);
         }
 
         return outDTO;

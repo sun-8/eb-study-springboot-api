@@ -10,6 +10,7 @@ import com.study.api.model.out.board.BoardListDTO;
 import com.study.api.model.process.BoardInfoProcessDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
 import com.study.api.model.process.MultiFileProcessDTO;
+import com.study.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,13 +56,13 @@ public class BoardService {
                                                                         boardSearchProcessDTO.getLastPage(),
                                                                         boardList);
 
-            outDTO.setResponseCode("0000");
+            outDTO.setResponseCode(Message.SUCCESS_CODE_0000);
             outDTO.setResponseData(boardSearchOutDTO);
 
         } catch (Exception e) {
             log.info(e.getMessage());
-            outDTO.setResponseCode("9999");
-            outDTO.setResponseMessage("처리 중 오류가 발생했습니다.");
+            outDTO.setResponseCode(Message.ERROR_CODE_9999);
+            outDTO.setResponseMessage(Message.ERROR_MESSAGE_9999);
         }
 
         return outDTO;
