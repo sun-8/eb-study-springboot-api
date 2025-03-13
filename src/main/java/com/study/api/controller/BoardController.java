@@ -1,20 +1,21 @@
 package com.study.api.controller;
 
+import com.study.api.config.ErrorDTO;
 import com.study.api.config.ResponseDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.mapstruct.BoardMapStruct;
 import com.study.api.model.out.BoardSearchOutDTO;
 import com.study.api.model.out.CategoryListOutDTO;
+import com.study.api.model.process.BoardInfoProcessDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
 import com.study.api.service.BoardService;
 import com.study.api.service.CategoryService;
+import com.study.message.Message;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,37 +66,28 @@ public class BoardController {
      * @param boardFormInsertInDTO
      * @return
      */
-    @PostMapping(value = "register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> insertData(@ModelAttribute @Valid BoardFormInsertInDTO boardFormInsertInDTO, BindingResult bindingResult) throws IOException {
+    @PostMapping(value = "register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseDTO<?> insertData(@ModelAttribute @Valid BoardFormInsertInDTO boardFormInsertInDTO, BindingResult bindingResult) throws IOException {
+        // todo. swagger 에서만 file upload를 하지 않았을 때 String을 배열로 바꿀 수 없다는 error 생김
 
-        int cnt = boardService.registerBoard(boardFormInsertInDTO);
+        BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
 
-        if (cnt == 1) {
-            return new ResponseEntity<>(HttpStatus.OK);
+        // 유효성 확인 후 등록
+        if (bindingResult.hasErrors()) {
+            ResponseDTO<List<ErrorDTO>> outErrorDTO = new ResponseDTO<>();
+            outErrorDTO.setResponseCode(Message.ERROR_CODE_9998);
+            outErrorDTO.setResponseMessage(Message.ERROR_MESSAGE_9998);
+
+            List<ErrorDTO> errorListDTO = boardMapStruct.errorToBoardFormInsertErrorDTOs(bindingResult.getFieldErrors());
+            outErrorDTO.setResponseData(errorListDTO);
+
+            return outErrorDTO;
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+            BoardInfoProcessDTO boardInfoProcessDTO = boardMapStruct.boardFormInsertInDtoToBoardInfoProcessDto(boardFormInsertInDTO);
+            ResponseDTO<Void> outDTO = boardService.registerBoard(boardInfoProcessDTO);
 
-        /* todo.
-            swagger에서 test 할 때 파일을 선택하지 않고 요청을 보내면
-            Failed to convert value of type 'java.lang.String' to required type 'java.util.List' error가 있어서
-            내가 지정한 validation 외에 처리할 것이 생김.
-            유효성 확인해서 해당되는 것이 있으면 ErrorDTO에 담아 반환하려 했으나 위의 대책을 찾지 못함.
-        * */
-//        // 유효성 확인 후 등록
-//        if (bindingResult.hasErrors()) {
-//            BoardFormInsertErrorDTO boardFormInsertErrorDTO = boardService.errorCheckBeforeRegisterBoard(bindingResult);
-//
-//            return new ResponseEntity<>(boardFormInsertErrorDTO, HttpStatus.BAD_REQUEST);
-//        } else {
-//            int cnt = boardService.registerBoard(boardFormInsertInDTO);
-//
-//            if (cnt == 1) {
-//                return new ResponseEntity<>(HttpStatus.OK);
-//            } else {
-//                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//            }
-//        }
+            return outDTO;
+        }
     }
 
 }

@@ -2,8 +2,6 @@ package com.study.api.service;
 
 import com.study.api.config.ResponseDTO;
 import com.study.api.mapper.BoardMapper;
-import com.study.api.model.error.BoardFormInsertErrorDTO;
-import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.mapstruct.BoardMapStruct;
 import com.study.api.model.out.BoardSearchOutDTO;
 import com.study.api.model.out.board.BoardListDTO;
@@ -14,7 +12,6 @@ import com.study.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -69,69 +66,43 @@ public class BoardService {
     }
 
     /**
-     * 게시물 등록 전 유효성 확인
-     * @param bindingResult
-     * @return boardFormInsertErrorDTO
-     */
-    public BoardFormInsertErrorDTO errorCheckBeforeRegisterBoard(BindingResult bindingResult) {
-        BoardFormInsertErrorDTO boardFormInsertErrorDTO = new BoardFormInsertErrorDTO();
-
-        bindingResult.getFieldErrors().forEach(error -> {
-            String field = error.getField();
-            String errorMessage = error.getDefaultMessage();
-
-            // 조건에 맞는 필드에 에러 메시지 설정
-            if ("categoryId".equals(field)) {
-                boardFormInsertErrorDTO.setCategoryIdErrorMessage(errorMessage);
-            } else if ("userName".equals(field)) {
-                boardFormInsertErrorDTO.setUserNameErrorMessage(errorMessage);
-            } else if ("password".equals(field)) {
-                boardFormInsertErrorDTO.setPasswordErrorMessage(errorMessage);
-            } else if ("passwordCheck".equals(field)) {
-                boardFormInsertErrorDTO.setPasswordCheckErrorMessage(errorMessage);
-            } else if ("title".equals(field)) {
-                boardFormInsertErrorDTO.setTitleErrorMessage(errorMessage);
-            } else if ("content".equals(field)) {
-                boardFormInsertErrorDTO.setContentsErrorMessage(errorMessage);
-            }
-        });
-
-        return boardFormInsertErrorDTO;
-    }
-
-    /**
      * 게시물 등록 및 파일 업로드
-     * @param inDTO
+     * @param processDTO
      * @return
      */
-    public int registerBoard(BoardFormInsertInDTO inDTO) {
-        // 데이터 처리 셋팅 - 이 과정은 controller에서.. map structure
-        BoardInfoProcessDTO boardInfoProcessDTO = new BoardInfoProcessDTO();
-        boardInfoProcessDTO.setCategoryId(inDTO.getCategoryId());
-        boardInfoProcessDTO.setUserName(inDTO.getUserName());
-        boardInfoProcessDTO.setPassword(inDTO.getPassword());
-        boardInfoProcessDTO.setTitle(inDTO.getTitle());
-        boardInfoProcessDTO.setContents(inDTO.getContents());
+    public ResponseDTO<Void> registerBoard(BoardInfoProcessDTO processDTO) {
+        ResponseDTO<Void> outDTO = new ResponseDTO<>();
 
+        // todo. 에러 처리 응답 규격화가 적절한가?
         // 파일 업로드 및 값 셋팅
         StringBuilder sb = new StringBuilder();
-        if (inDTO.getFileId() != null) {
-            for(MultipartFile file : inDTO.getFileId()) {
+        if (processDTO.getMultiFileId() != null) {
+            for(MultipartFile file : processDTO.getMultiFileId()) {
                 try {
                     MultiFileProcessDTO multiFileProcessDTO = multiFileService.upload(file);
                     if (multiFileProcessDTO != null) {
                         sb.append(multiFileProcessDTO.getFileId()).append(" | ");
                     }
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    log.info(e.getMessage());
+                    outDTO.setResponseCode(Message.ERROR_CODE_9997);
+                    outDTO.setResponseMessage(Message.ERROR_MESSAGE_9997);
+                    return outDTO;
                 }
             }
         }
-        boardInfoProcessDTO.setFileId(sb.toString());
+        BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
+        boardMapStruct.setFileId(sb.toString(), processDTO);
 
-        int cnt = boardMapper.registerBoard(boardInfoProcessDTO);
+        int cnt = boardMapper.registerBoard(processDTO);
+        if (cnt == 0) {
+            outDTO.setResponseCode(Message.ERROR_CODE_9999);
+            outDTO.setResponseMessage(Message.ERROR_MESSAGE_9999);
+        } else {
+            outDTO.setResponseCode(Message.SUCCESS_CODE_0000);
+        }
 
-        return cnt;
+        return outDTO;
     }
 
     /**

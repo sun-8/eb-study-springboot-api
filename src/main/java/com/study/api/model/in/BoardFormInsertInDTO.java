@@ -10,6 +10,10 @@ import java.util.List;
 
 @Data
 public class BoardFormInsertInDTO {
+    /* todo.
+        class 대신 record 사용하려 했으나
+        spring validation 적용 안됨.
+    * */
     @NotBlank(message = "카테고리를 선택해주세요.")
     private String categoryId;
 
