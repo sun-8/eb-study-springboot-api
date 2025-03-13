@@ -1,13 +1,16 @@
 package com.study.api.service;
 
+import com.study.api.config.ResponseDTO;
 import com.study.api.mapper.CategoryMapper;
 import com.study.api.model.out.CategoryListOutDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.logging.Logger;
 
+@Slf4j
 @Service
 public class CategoryService {
     Logger logger = Logger.getLogger(CategoryService.class.getName());
@@ -19,10 +22,22 @@ public class CategoryService {
      * 카테고리 모든 데이터 목록 조회
      * @return categoryList
      */
-    public List<CategoryListOutDTO> getCategoryAllList() {
+    public ResponseDTO<List<CategoryListOutDTO>> getCategoryAllList() {
 
-        List<CategoryListOutDTO> categoryList = categoryMapper.getCategoryAllList();
+        ResponseDTO<List<CategoryListOutDTO>> outDTO = new ResponseDTO<>();
 
-        return categoryList;
+        try {
+            List<CategoryListOutDTO> categoryList = categoryMapper.getCategoryAllList();
+
+            outDTO.setResponseCode("0000");
+            outDTO.setResponseData(categoryList);
+
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            outDTO.setResponseCode("9999");
+            outDTO.setResponseMessage("처리 중 오류가 발생했습니다.");
+        }
+
+        return outDTO;
     }
 }

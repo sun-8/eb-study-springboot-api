@@ -52,12 +52,12 @@ public class BoardController {
      * 카테고리 목록 조회
      * @return result
      */
-    @GetMapping(value = "categoryList", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CategoryListOutDTO>> categoryList() {
+    @GetMapping(value = "categoryList")
+    public ResponseDTO<List<CategoryListOutDTO>> categoryList() {
 
-        List<CategoryListOutDTO> outDTO = categoryService.getCategoryAllList();
+        ResponseDTO<List<CategoryListOutDTO>> outDTO = categoryService.getCategoryAllList();
 
-        return new ResponseEntity<>(outDTO, HttpStatus.OK);
+        return outDTO;
     }
 
     /**
