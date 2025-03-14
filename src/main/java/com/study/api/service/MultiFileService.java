@@ -3,6 +3,7 @@ package com.study.api.service;
 import com.study.api.mapper.MultiFileMapper;
 import com.study.api.model.process.MultiFileProcessDTO;
 import com.study.util.CommonUtil;
+import com.study.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -31,26 +32,32 @@ public class MultiFileService {
     private MultiFileMapper multiFileMapper;
 
     /**
-     * 파일 업로드
+     * 이미지 파일 업로드
      * @param file
      * @throws IOException
      */
-    public MultiFileProcessDTO upload(MultipartFile file) throws IOException {
+    public MultiFileProcessDTO imgUpload(MultipartFile file) throws Exception {
 
-        // todo. 파일 금지 조건 추가 필요
         if (file == null || file.isEmpty()) {
             return null;
         }
+        MultiFileProcessDTO multiFileProcessDTO = new MultiFileProcessDTO();
 
-        // 파일 정보 셋팅
-        MultiFileProcessDTO multiFileProcessDTO = this.fileInfoSetting(file);
-        // 파일 저장
-        int insertCnt = this.registerMultiFile(multiFileProcessDTO);
+        // todo. 파일 업로드 확장자 제한 확인
+        // 이미지 파일만 업로드 가능
+        if(FileUtil.vaildImgFile(file)) {
+            // 파일 정보 셋팅
+            multiFileProcessDTO = this.fileInfoSetting(file);
 
-        File saveFile = new File(multiFileProcessDTO.getFilePath(), multiFileProcessDTO.getFileId());
-        // 파일 업로드
-        file.transferTo(saveFile);
+            // 파일 저장
+            int insertCnt = this.registerMultiFile(multiFileProcessDTO);
 
+            File saveFile = new File(multiFileProcessDTO.getFilePath(), multiFileProcessDTO.getFileId());
+            // 파일 업로드
+            file.transferTo(saveFile);
+        } else {
+            throw new Exception();
+        }
         return multiFileProcessDTO;
     }
 
@@ -125,15 +132,14 @@ public class MultiFileService {
         UUID uuid = UUID.randomUUID();
         String fileId = fileFolder + "_" + uuid + "_" + fileName;
 
-        MultiFileProcessDTO multiFileProcessDTO = new MultiFileProcessDTO();
-        multiFileProcessDTO.setFileId(fileId);
-        multiFileProcessDTO.setFileFolder(fileFolder);
-        multiFileProcessDTO.setFileName(fileName);
-        multiFileProcessDTO.setFilePath(filePath);
-        multiFileProcessDTO.setFileSize(fileSize);
-        multiFileProcessDTO.setFileType(fileType);
-        multiFileProcessDTO.setFileExtend(fileExtend);
-
-        return multiFileProcessDTO;
+        return MultiFileProcessDTO.builder().
+                fileId(fileId).
+                fileFolder(fileFolder).
+                fileName(fileName).
+                filePath(filePath).
+                fileSize(fileSize).
+                fileType(fileType).
+                fileExtend(fileExtend).
+                build();
     }
 }

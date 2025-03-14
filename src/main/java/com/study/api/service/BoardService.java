@@ -79,11 +79,11 @@ public class BoardService {
         if (processDTO.getMultiFileId() != null) {
             for(MultipartFile file : processDTO.getMultiFileId()) {
                 try {
-                    MultiFileProcessDTO multiFileProcessDTO = multiFileService.upload(file);
+                    MultiFileProcessDTO multiFileProcessDTO = multiFileService.imgUpload(file);
                     if (multiFileProcessDTO != null) {
                         sb.append(multiFileProcessDTO.getFileId()).append(" | ");
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     log.info(e.getMessage());
                     outDTO.setResponseCode(Message.ERROR_CODE_9997);
                     outDTO.setResponseMessage(Message.ERROR_MESSAGE_9997);
