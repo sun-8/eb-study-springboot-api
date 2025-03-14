@@ -6,17 +6,21 @@ import com.study.util.CommonUtil;
 import com.study.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -66,12 +70,30 @@ public class MultiFileService {
      * @param fileId
      * @return
      */
-    public ResponseEntity<Resource> download(String fileId) throws IOException {
+    public ResponseEntity<StreamingResponseBody> download(String fileId) throws IOException {
 
         MultiFileProcessDTO multiFileProcessDTO = this.getMultiFile(new MultiFileProcessDTO(fileId));
+        Path path = Paths.get(multiFileProcessDTO.getFilePath() + "\\" + fileId);
 
-        // todo. byte buffer 사용
-        Resource resource = new FileSystemResource(multiFileProcessDTO.getFilePath() + "\\" + fileId);
+        // 해당 경로에 파일 없을 때
+        if (!Files.exists(path)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // byte buffer 사용하여 조금씩 다운로드 진행
+        StreamingResponseBody streamingResponseBody = new StreamingResponseBody() {
+            @Override
+            public void writeTo(OutputStream outputStream) throws IOException {
+                try(InputStream inputStream = Files.newInputStream(path)) {
+                    byte[] buffer = new byte[1024];
+                    int read;
+                    while ((read = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, read);
+                        outputStream.flush();
+                    }
+                }
+            }
+        };
 
         // URL 인코딩을 사용하여 파일 이름을 처리 - 한글 처리
         String encodedFileName = URLEncoder.encode(multiFileProcessDTO.getFileName(), "UTF-8")
@@ -81,7 +103,7 @@ public class MultiFileService {
         headers.setContentType(MediaType.valueOf(multiFileProcessDTO.getFileType() + "/" + multiFileProcessDTO.getFileExtend()));
         headers.setContentDispositionFormData("attachment", encodedFileName);
 
-        return ResponseEntity.ok().headers(headers).body(resource);
+        return ResponseEntity.ok().headers(headers).body(streamingResponseBody);
     }
 
     /**
