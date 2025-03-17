@@ -1,5 +1,6 @@
 package com.study.api.mapper;
 
+import com.study.api.model.out.BoardInfoOutDTO;
 import com.study.api.model.out.board.BoardListDTO;
 import com.study.api.model.process.BoardInfoProcessDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
@@ -30,5 +31,12 @@ public interface BoardMapper {
      * @return int
      */
     int registerBoard(BoardInfoProcessDTO boardInfoProcessDTO);
+
+    /**
+     * 게시물 단건 조회
+     * @param seq
+     * @return
+     */
+    BoardInfoOutDTO getBoardInfo(String seq);
 
 }

@@ -3,6 +3,7 @@ package com.study.api.service;
 import com.study.api.config.ResponseDTO;
 import com.study.api.mapper.BoardMapper;
 import com.study.api.model.mapstruct.BoardMapStruct;
+import com.study.api.model.out.BoardInfoOutDTO;
 import com.study.api.model.out.BoardSearchOutDTO;
 import com.study.api.model.out.board.BoardListDTO;
 import com.study.api.model.process.BoardInfoProcessDTO;
@@ -106,6 +107,20 @@ public class BoardService {
     }
 
     /**
+     * 게시물 상세 조회
+     * @param seq
+     * @return
+     */
+    public ResponseDTO<BoardInfoOutDTO> boardDetail(String seq) {
+        ResponseDTO<BoardInfoOutDTO> outDTO = new ResponseDTO<>();
+
+        outDTO.setResponseCode(Message.SUCCESS_CODE_0000);
+        outDTO.setResponseData(this.getBoardInfo(seq));
+
+        return outDTO;
+    }
+
+    /**
      * 게시글 총 개수 (검색조건)
      * @param boardSearchProcessDTO
      * @return cnt
@@ -127,5 +142,17 @@ public class BoardService {
         List<BoardListDTO> boardList = boardMapper.getBoardSearchList(boardSearchProcessDTO);
 
         return boardList;
+    }
+
+    /**
+     * 게시물 단건 조회
+     * @param seq
+     * @return
+     */
+    public BoardInfoOutDTO getBoardInfo(String seq) {
+
+        BoardInfoOutDTO boardInfoOutDTO = boardMapper.getBoardInfo(seq);
+
+        return boardInfoOutDTO;
     }
 }

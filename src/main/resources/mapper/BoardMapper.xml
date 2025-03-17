@@ -78,4 +78,19 @@
         )
     </insert>
 
+    <select id="getBoardInfo" resultType="com.study.api.model.out.BoardInfoOutDTO" parameterType="String">
+        SELECT
+            ID,
+            (SELECT NAME FROM CATEGORY WHERE ID = CATEGORY_ID) AS CATEGORY_NAME,
+            USER_NAME,
+            TITLE,
+            CONTENTS,
+            VIEWS,
+            FILE_ID,
+            REGISTER_DATETIME,
+            MODIFY_DATETIME
+        FROM BOARD
+        WHERE ID = #{seq}
+    </select>
+
 </mapper>

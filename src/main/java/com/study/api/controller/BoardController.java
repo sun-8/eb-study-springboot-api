@@ -5,6 +5,7 @@ import com.study.api.config.ResponseDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.mapstruct.BoardMapStruct;
+import com.study.api.model.out.BoardInfoOutDTO;
 import com.study.api.model.out.BoardSearchOutDTO;
 import com.study.api.model.out.CategoryListOutDTO;
 import com.study.api.model.process.BoardInfoProcessDTO;
@@ -89,5 +90,14 @@ public class BoardController {
             return outDTO;
         }
     }
+
+    @GetMapping("{seq}")
+    public ResponseDTO<BoardInfoOutDTO> detail(@PathVariable("seq") String seq) {
+
+        ResponseDTO<BoardInfoOutDTO> outDTO = boardService.boardDetail(seq);
+
+        return outDTO;
+    }
+
 
 }
