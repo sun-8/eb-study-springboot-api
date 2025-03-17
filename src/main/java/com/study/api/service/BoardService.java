@@ -1,6 +1,5 @@
 package com.study.api.service;
 
-import com.study.api.config.ResponseDTO;
 import com.study.api.mapper.BoardMapper;
 import com.study.api.model.mapstruct.BoardMapStruct;
 import com.study.api.model.out.BoardInfoOutDTO;
@@ -9,13 +8,11 @@ import com.study.api.model.out.board.BoardListDTO;
 import com.study.api.model.process.BoardInfoProcessDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
 import com.study.api.model.process.MultiFileProcessDTO;
-import com.study.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -34,36 +31,23 @@ public class BoardService {
      * @param boardSearchProcessDTO
      * @return outDTO
      */
-    public ResponseDTO<BoardSearchOutDTO> boardSearch(BoardSearchProcessDTO boardSearchProcessDTO) {
+    public BoardSearchOutDTO boardSearch(BoardSearchProcessDTO boardSearchProcessDTO) throws Exception {
+        // 페이지 계산
+        int searchDataCount = this.getBoardSearchCount(boardSearchProcessDTO);
+        // 게시판 목록
+        List<BoardListDTO> boardList = this.getBoardSearchList(boardSearchProcessDTO);
 
-        ResponseDTO<BoardSearchOutDTO> outDTO = new ResponseDTO<>();
+        BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
+        boardMapStruct.setSearchDataCount(searchDataCount, boardSearchProcessDTO);
+        boardMapStruct.setLastPageBySearchDataCount(searchDataCount, boardSearchProcessDTO);
 
-        try{
-            // 페이지 계산
-            int searchDataCount = this.getBoardSearchCount(boardSearchProcessDTO);
-            // 게시판 목록
-            List<BoardListDTO> boardList = this.getBoardSearchList(boardSearchProcessDTO);
+        BoardSearchOutDTO boardSearchOutDTO = new BoardSearchOutDTO(boardSearchProcessDTO.getNowPage(),
+                searchDataCount,
+                1,
+                boardSearchProcessDTO.getLastPage(),
+                boardList);
 
-            BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
-            boardMapStruct.setSearchDataCount(searchDataCount, boardSearchProcessDTO);
-            boardMapStruct.setLastPageBySearchDataCount(searchDataCount, boardSearchProcessDTO);
-
-            BoardSearchOutDTO boardSearchOutDTO = new BoardSearchOutDTO(boardSearchProcessDTO.getNowPage(),
-                                                                        searchDataCount,
-                                                                        1,
-                                                                        boardSearchProcessDTO.getLastPage(),
-                                                                        boardList);
-
-            outDTO.setResponseCode(Message.SUCCESS_CODE_0000);
-            outDTO.setResponseData(boardSearchOutDTO);
-
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            outDTO.setResponseCode(Message.ERROR_CODE_9999);
-            outDTO.setResponseMessage(Message.ERROR_MESSAGE_9999);
-        }
-
-        return outDTO;
+        return boardSearchOutDTO;
     }
 
     /**
@@ -71,24 +55,14 @@ public class BoardService {
      * @param processDTO
      * @return
      */
-    public ResponseDTO<Void> registerBoard(BoardInfoProcessDTO processDTO) {
-        ResponseDTO<Void> outDTO = new ResponseDTO<>();
-
-        // todo. 에러 처리 응답 규격화가 적절한가?
+    public int registerBoard(BoardInfoProcessDTO processDTO) throws Exception {
         // 파일 업로드 및 값 셋팅
         StringBuilder sb = new StringBuilder();
         if (processDTO.getMultiFileId() != null) {
             for(MultipartFile file : processDTO.getMultiFileId()) {
-                try {
-                    MultiFileProcessDTO multiFileProcessDTO = multiFileService.imgUpload(file);
-                    if (multiFileProcessDTO != null) {
-                        sb.append(multiFileProcessDTO.getFileId()).append(" | ");
-                    }
-                } catch (Exception e) {
-                    log.info(e.getMessage());
-                    outDTO.setResponseCode(Message.ERROR_CODE_9997);
-                    outDTO.setResponseMessage(Message.ERROR_MESSAGE_9997);
-                    return outDTO;
+                MultiFileProcessDTO multiFileProcessDTO = multiFileService.imgUpload(file);
+                if (multiFileProcessDTO != null) {
+                    sb.append(multiFileProcessDTO.getFileId()).append(" | ");
                 }
             }
         }
@@ -96,28 +70,8 @@ public class BoardService {
         boardMapStruct.setFileId(sb.toString(), processDTO);
 
         int cnt = boardMapper.registerBoard(processDTO);
-        if (cnt == 0) {
-            outDTO.setResponseCode(Message.ERROR_CODE_9999);
-            outDTO.setResponseMessage(Message.ERROR_MESSAGE_9999);
-        } else {
-            outDTO.setResponseCode(Message.SUCCESS_CODE_0000);
-        }
 
-        return outDTO;
-    }
-
-    /**
-     * 게시물 상세 조회
-     * @param seq
-     * @return
-     */
-    public ResponseDTO<BoardInfoOutDTO> boardDetail(String seq) {
-        ResponseDTO<BoardInfoOutDTO> outDTO = new ResponseDTO<>();
-
-        outDTO.setResponseCode(Message.SUCCESS_CODE_0000);
-        outDTO.setResponseData(this.getBoardInfo(seq));
-
-        return outDTO;
+        return cnt;
     }
 
     /**
@@ -125,7 +79,7 @@ public class BoardService {
      * @param boardSearchProcessDTO
      * @return cnt
      */
-    public int getBoardSearchCount(BoardSearchProcessDTO boardSearchProcessDTO) {
+    public int getBoardSearchCount(BoardSearchProcessDTO boardSearchProcessDTO) throws Exception {
 
         int cnt = boardMapper.getBoardSearchCount(boardSearchProcessDTO);
 
@@ -137,7 +91,7 @@ public class BoardService {
      * @param boardSearchProcessDTO
      * @return boardList
      */
-    public List<BoardListDTO> getBoardSearchList(BoardSearchProcessDTO boardSearchProcessDTO) {
+    public List<BoardListDTO> getBoardSearchList(BoardSearchProcessDTO boardSearchProcessDTO) throws Exception {
 
         List<BoardListDTO> boardList = boardMapper.getBoardSearchList(boardSearchProcessDTO);
 
@@ -149,7 +103,7 @@ public class BoardService {
      * @param seq
      * @return
      */
-    public BoardInfoOutDTO getBoardInfo(String seq) {
+    public BoardInfoOutDTO getBoardInfo(String seq) throws Exception {
 
         BoardInfoOutDTO boardInfoOutDTO = boardMapper.getBoardInfo(seq);
 

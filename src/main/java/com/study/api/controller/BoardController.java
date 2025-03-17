@@ -1,7 +1,6 @@
 package com.study.api.controller;
 
 import com.study.api.config.ErrorDTO;
-import com.study.api.config.ResponseDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.mapstruct.BoardMapStruct;
@@ -17,10 +16,10 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -38,16 +37,21 @@ public class BoardController {
      * @return outDTO
      */
     @GetMapping(value = "list")
-    public ResponseDTO<BoardSearchOutDTO> list(@ModelAttribute BoardSearchInDTO boardSearchInDTO) {
+    public ResponseEntity<BoardSearchOutDTO> list(@ModelAttribute BoardSearchInDTO boardSearchInDTO) throws Exception {
+        try {
+            BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
+            int pageSize = 10;
+            BoardSearchProcessDTO boardSearchProcessDTO = boardMapStruct.boardSearchInDtoToBoardSearchProcessDto(boardSearchInDTO, pageSize);
+            boardMapStruct.setOffsetByNowPage(boardSearchInDTO, boardSearchProcessDTO);
 
-        BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
-        int pageSize = 10;
-        BoardSearchProcessDTO boardSearchProcessDTO = boardMapStruct.boardSearchInDtoToBoardSearchProcessDto(boardSearchInDTO, pageSize);
-        boardMapStruct.setOffsetByNowPage(boardSearchInDTO, boardSearchProcessDTO);
+            BoardSearchOutDTO outDTO = boardService.boardSearch(boardSearchProcessDTO);
 
-        ResponseDTO<BoardSearchOutDTO> outDTO = boardService.boardSearch(boardSearchProcessDTO);
+            return ResponseEntity.ok(outDTO);
 
-        return outDTO;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new Exception(Message.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -55,11 +59,15 @@ public class BoardController {
      * @return result
      */
     @GetMapping(value = "categoryList")
-    public ResponseDTO<List<CategoryListOutDTO>> categoryList() {
+    public ResponseEntity<List<CategoryListOutDTO>> categoryList() throws Exception {
+        try {
+            List<CategoryListOutDTO> outDTO = categoryService.getCategoryAllList();
 
-        ResponseDTO<List<CategoryListOutDTO>> outDTO = categoryService.getCategoryAllList();
-
-        return outDTO;
+            return ResponseEntity.ok(outDTO);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new Exception(Message.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -68,35 +76,39 @@ public class BoardController {
      * @return
      */
     @PostMapping(value = "register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseDTO<?> insertData(@ModelAttribute @Valid BoardFormInsertInDTO boardFormInsertInDTO, BindingResult bindingResult) throws IOException {
-        // todo. swagger 에서만 file upload를 하지 않았을 때 String을 배열로 바꿀 수 없다는 error 생김
+    public ResponseEntity<?> insertData(@ModelAttribute @Valid BoardFormInsertInDTO boardFormInsertInDTO, BindingResult bindingResult) throws Exception {
+        // todo. swagger 에서만 file upload를 하지 않았을 때 String을 배열로 바꿀 수 없다는 error 생김 - 처리를 해줘야 할 것 같다.
 
-        BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
+        try {
+            BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
 
-        // 유효성 확인 후 등록
-        if (bindingResult.hasErrors()) {
-            ResponseDTO<List<ErrorDTO>> outErrorDTO = new ResponseDTO<>();
-            outErrorDTO.setResponseCode(Message.ERROR_CODE_9998);
-            outErrorDTO.setResponseMessage(Message.ERROR_MESSAGE_9998);
+            // 유효성 확인 후 등록
+            if (bindingResult.hasErrors()) {
+                List<ErrorDTO> errorListDTO = boardMapStruct.errorToBoardFormInsertErrorDTOs(bindingResult.getFieldErrors());
 
-            List<ErrorDTO> errorListDTO = boardMapStruct.errorToBoardFormInsertErrorDTOs(bindingResult.getFieldErrors());
-            outErrorDTO.setResponseData(errorListDTO);
+                return ResponseEntity.ok(errorListDTO);
+            } else {
+                BoardInfoProcessDTO boardInfoProcessDTO = boardMapStruct.boardFormInsertInDtoToBoardInfoProcessDto(boardFormInsertInDTO);
+                int cnt = boardService.registerBoard(boardInfoProcessDTO);
 
-            return outErrorDTO;
-        } else {
-            BoardInfoProcessDTO boardInfoProcessDTO = boardMapStruct.boardFormInsertInDtoToBoardInfoProcessDto(boardFormInsertInDTO);
-            ResponseDTO<Void> outDTO = boardService.registerBoard(boardInfoProcessDTO);
-
-            return outDTO;
+                return ResponseEntity.ok(cnt);
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new Exception(Message.ERROR_MESSAGE);
         }
     }
 
     @GetMapping("{seq}")
-    public ResponseDTO<BoardInfoOutDTO> detail(@PathVariable("seq") String seq) {
+    public ResponseEntity<BoardInfoOutDTO> detail(@PathVariable("seq") String seq) throws Exception {
+        try {
+            BoardInfoOutDTO outDTO = boardService.getBoardInfo(seq);
 
-        ResponseDTO<BoardInfoOutDTO> outDTO = boardService.boardDetail(seq);
-
-        return outDTO;
+            return ResponseEntity.ok(outDTO);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new Exception(Message.ERROR_MESSAGE);
+        }
     }
 
 
