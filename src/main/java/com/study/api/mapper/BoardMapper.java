@@ -33,6 +33,13 @@ public interface BoardMapper {
     int registerBoard(BoardInfoProcessDTO boardInfoProcessDTO);
 
     /**
+     * 조회수 증가
+     * @param seq
+     * @return
+     */
+    int modifyBoardViews(String seq);
+
+    /**
      * 게시물 단건 조회
      * @param seq
      * @return

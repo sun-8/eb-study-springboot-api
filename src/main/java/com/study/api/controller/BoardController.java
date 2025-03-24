@@ -99,6 +99,12 @@ public class BoardController {
         }
     }
 
+    /**
+     * 게시물 상세 조회
+     * @param seq
+     * @return
+     * @throws Exception
+     */
     @GetMapping("{seq}")
     public ResponseEntity<BoardInfoOutDTO> detail(@PathVariable("seq") String seq) throws Exception {
         try {

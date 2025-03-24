@@ -49,7 +49,7 @@
 
     <!-- 게시글 등록 -->
     <insert id="registerBoard"
-            parameterType="com.study.api.model.process.MultiFileProcessDTO">
+            parameterType="com.study.api.model.process.BoardInfoProcessDTO">
         INSERT INTO BOARD
         (
             ID,
@@ -78,7 +78,19 @@
         )
     </insert>
 
-    <select id="getBoardInfo" resultType="com.study.api.model.out.BoardInfoOutDTO" parameterType="String">
+    <!-- 조회수 증가 -->
+    <update id="modifyBoardViews"
+            parameterType="String">
+        UPDATE BOARD
+        SET
+            VIEWS = VIEWS + 1
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 게시물 단건 조회 -->
+    <select id="getBoardInfo"
+            resultType="com.study.api.model.out.BoardInfoOutDTO"
+            parameterType="String">
         SELECT
             ID,
             (SELECT NAME FROM CATEGORY WHERE ID = CATEGORY_ID) AS CATEGORY_NAME,

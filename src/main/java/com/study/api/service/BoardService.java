@@ -75,6 +75,19 @@ public class BoardService {
     }
 
     /**
+     * 게시물 단건 조회
+     * @param seq
+     * @return
+     */
+    public BoardInfoOutDTO getBoardInfo(String seq) throws Exception {
+
+        int cnt = boardMapper.modifyBoardViews(seq);
+        BoardInfoOutDTO boardInfoOutDTO = boardMapper.getBoardInfo(seq);
+
+        return boardInfoOutDTO;
+    }
+
+    /**
      * 게시글 총 개수 (검색조건)
      * @param boardSearchProcessDTO
      * @return cnt
@@ -96,17 +109,5 @@ public class BoardService {
         List<BoardListDTO> boardList = boardMapper.getBoardSearchList(boardSearchProcessDTO);
 
         return boardList;
-    }
-
-    /**
-     * 게시물 단건 조회
-     * @param seq
-     * @return
-     */
-    public BoardInfoOutDTO getBoardInfo(String seq) throws Exception {
-
-        BoardInfoOutDTO boardInfoOutDTO = boardMapper.getBoardInfo(seq);
-
-        return boardInfoOutDTO;
     }
 }
