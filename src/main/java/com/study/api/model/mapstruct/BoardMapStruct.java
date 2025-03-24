@@ -2,6 +2,7 @@ package com.study.api.model.mapstruct;
 
 import com.study.api.config.ErrorDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
+import com.study.api.model.in.BoardFormUpdateInDTO;
 import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.process.BoardInfoProcessDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
@@ -42,15 +43,20 @@ public interface BoardMapStruct {
     // FieldError -> ErrorDTO 변환
     @Mapping(source = "field", target = "fieldName")
     @Mapping(source = "defaultMessage", target = "errorMessage")
-    ErrorDTO errorToBoardFormInsertErrorDTOs(FieldError fieldError);
+    ErrorDTO errorToBoardFormErrorDTOs(FieldError fieldError);
 
     // List<FieldError> -> List<ErrorDTO> 변환
-    List<ErrorDTO> errorToBoardFormInsertErrorDTOs(List<FieldError> fieldErrors);
+    List<ErrorDTO> errorToBoardFormErrorDTOs(List<FieldError> fieldErrors);
 
     // BoardFormInsertInDTO -> BoardInfoProcessDTO 변환
     @Mapping(target = "fileId", ignore = true)
     @Mapping(source = "fileId", target = "multiFileId")
     BoardInfoProcessDTO boardFormInsertInDtoToBoardInfoProcessDto(BoardFormInsertInDTO boardFormInsertInDTO);
+
+    // BoardFormUpdateInDTO -> BoardInfoProcessDTO 변환
+    @Mapping(target = "fileId", ignore = true)
+    @Mapping(source = "fileId", target = "multiFileId")
+    BoardInfoProcessDTO boardFormUpdateInDtoToBoardInfoProcessDto(BoardFormUpdateInDTO boardFormUpdateInDTO);
 
     // fileId 설정 메서드
     default void setFileId(String fileId, @MappingTarget BoardInfoProcessDTO boardInfoProcessDTO) {

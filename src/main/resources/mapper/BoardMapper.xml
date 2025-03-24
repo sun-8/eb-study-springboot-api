@@ -105,4 +105,17 @@
         WHERE ID = #{seq}
     </select>
 
+    <!-- 게시글 수정 -->
+    <update id="modifyBoard"
+            parameterType="com.study.api.model.process.BoardInfoProcessDTO">
+        UPDATE BOARD
+        SET
+            USER_NAME = #{userName},
+            TITLE = #{title},
+            CONTENTS = #{contents},
+            FILE_ID = #{fileId},
+            MODIFY_DATETIME = NOW()
+        WHERE ID = #{id}
+    </update>
+
 </mapper>

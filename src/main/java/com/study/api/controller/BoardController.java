@@ -2,6 +2,7 @@ package com.study.api.controller;
 
 import com.study.api.config.ErrorDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
+import com.study.api.model.in.BoardFormUpdateInDTO;
 import com.study.api.model.in.BoardSearchInDTO;
 import com.study.api.model.mapstruct.BoardMapStruct;
 import com.study.api.model.out.BoardInfoOutDTO;
@@ -84,7 +85,7 @@ public class BoardController {
 
             // 유효성 확인 후 등록
             if (bindingResult.hasErrors()) {
-                List<ErrorDTO> errorListDTO = boardMapStruct.errorToBoardFormInsertErrorDTOs(bindingResult.getFieldErrors());
+                List<ErrorDTO> errorListDTO = boardMapStruct.errorToBoardFormErrorDTOs(bindingResult.getFieldErrors());
 
                 return ResponseEntity.ok(errorListDTO);
             } else {
@@ -117,5 +118,32 @@ public class BoardController {
         }
     }
 
+    /**
+     * 게시물 수정 및 파일 업로드
+     * @param boardFormUpdateInDTO
+     * @return
+     */
+    @PutMapping(value = "modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateData(@ModelAttribute @Valid BoardFormUpdateInDTO boardFormUpdateInDTO, BindingResult bindingResult) throws Exception {
+        // todo. swagger 에서만 file upload를 하지 않았을 때 String을 배열로 바꿀 수 없다는 error 생김 - 처리를 해줘야 할 것 같다.
 
+        try {
+            BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
+
+            // 유효성 확인 후 등록
+            if (bindingResult.hasErrors()) {
+                List<ErrorDTO> errorListDTO = boardMapStruct.errorToBoardFormErrorDTOs(bindingResult.getFieldErrors());
+
+                return ResponseEntity.ok(errorListDTO);
+            } else {
+                BoardInfoProcessDTO boardInfoProcessDTO = boardMapStruct.boardFormUpdateInDtoToBoardInfoProcessDto(boardFormUpdateInDTO);
+                int cnt = boardService.modifyBoard(boardInfoProcessDTO);
+
+                return ResponseEntity.ok(cnt);
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new Exception(Message.ERROR_MESSAGE);
+        }
+    }
 }

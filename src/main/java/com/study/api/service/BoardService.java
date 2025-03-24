@@ -88,6 +88,30 @@ public class BoardService {
     }
 
     /**
+     * 게시물 수정 및 파일 업로드
+     * @param processDTO
+     * @return
+     */
+    public int modifyBoard(BoardInfoProcessDTO processDTO) throws Exception {
+        // 파일 업로드 및 값 셋팅
+        StringBuilder sb = new StringBuilder();
+        if (processDTO.getMultiFileId() != null) {
+            for(MultipartFile file : processDTO.getMultiFileId()) {
+                MultiFileProcessDTO multiFileProcessDTO = multiFileService.imgUpload(file);
+                if (multiFileProcessDTO != null) {
+                    sb.append(multiFileProcessDTO.getFileId()).append(" | ");
+                }
+            }
+        }
+        BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
+        boardMapStruct.setFileId(sb.toString(), processDTO);
+
+        int cnt = boardMapper.modifyBoard(processDTO);
+
+        return cnt;
+    }
+
+    /**
      * 게시글 총 개수 (검색조건)
      * @param boardSearchProcessDTO
      * @return cnt

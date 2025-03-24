@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class BoardInfoProcessDTO {
+    private int id;
     private String categoryId;
     private String userName;
     private String password;

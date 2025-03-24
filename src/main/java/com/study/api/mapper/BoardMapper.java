@@ -46,4 +46,10 @@ public interface BoardMapper {
      */
     BoardInfoOutDTO getBoardInfo(String seq);
 
+    /**
+     * 게시판 수정
+     * @param boardInfoProcessDTO
+     * @return int
+     */
+    int modifyBoard(BoardInfoProcessDTO boardInfoProcessDTO);
 }
