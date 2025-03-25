@@ -167,4 +167,18 @@ public class BoardController {
             throw new Exception(Message.ERROR_MESSAGE);
         }
     }
+
+    /**
+     * 게시물 삭제
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @DeleteMapping(value = "delete")
+    public ResponseEntity<Integer> deleteData(@RequestParam("id") int id) throws Exception{
+
+        int cnt = boardService.deleteBoard(id);
+
+        return ResponseEntity.ok(cnt);
+    }
 }

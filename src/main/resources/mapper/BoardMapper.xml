@@ -126,4 +126,12 @@
         WHERE ID = #{id}
         AND PASSWORD = #{password}
     </select>
+
+    <!-- 게시글 삭제 -->
+    <delete id="deleteBoard"
+            parameterType="int">
+        DELETE FROM BOARD
+        WHERE ID = #{id}
+    </delete>
+
 </mapper>

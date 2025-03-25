@@ -108,6 +108,9 @@ public class BoardService {
 
         int cnt = boardMapper.modifyBoard(processDTO);
 
+        return cnt;
+    }
+
     /**
      * 비밀번호 확인
      * @param processDTO
@@ -120,6 +123,16 @@ public class BoardService {
 
         return cnt;
     }
+
+    /**
+     * 게시글 삭제
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public int deleteBoard(int id) throws Exception {
+
+        int cnt = boardMapper.deleteBoard(id);
 
         return cnt;
     }

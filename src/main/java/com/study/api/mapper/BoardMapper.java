@@ -59,4 +59,11 @@ public interface BoardMapper {
      * @return
      */
     int checkPassword(BoardInfoProcessDTO boardInfoProcessDTO);
+
+    /**
+     * 게시판 삭제
+     * @param seq
+     * @return
+     */
+    int deleteBoard(int seq);
 }
