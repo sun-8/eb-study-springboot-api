@@ -1,6 +1,7 @@
 package com.study.api.model.mapstruct;
 
 import com.study.api.config.ErrorDTO;
+import com.study.api.model.in.BoardCheckPasswordInDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardFormUpdateInDTO;
 import com.study.api.model.in.BoardSearchInDTO;
@@ -62,4 +63,14 @@ public interface BoardMapStruct {
     default void setFileId(String fileId, @MappingTarget BoardInfoProcessDTO boardInfoProcessDTO) {
         boardInfoProcessDTO.setFileId(fileId);
     }
+
+    @Mapping(target = "categoryId", ignore = true)
+    @Mapping(target = "userName", ignore = true)
+    @Mapping(target = "title", ignore = true)
+    @Mapping(target = "contents", ignore = true)
+    @Mapping(target = "multiFileId", ignore = true)
+    @Mapping(target = "fileId", ignore = true)
+    @Mapping(target = "registerDatetime", ignore = true)
+    @Mapping(target = "modifyDatetime", ignore = true)
+    BoardInfoProcessDTO boardCheckPasswordInDtoToBoardInfoProcessDto(BoardCheckPasswordInDTO boardCheckPasswordInDTO);
 }

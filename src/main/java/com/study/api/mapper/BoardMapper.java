@@ -52,4 +52,11 @@ public interface BoardMapper {
      * @return int
      */
     int modifyBoard(BoardInfoProcessDTO boardInfoProcessDTO);
+
+    /**
+     * 비밀번호 확인
+     * @param boardInfoProcessDTO
+     * @return
+     */
+    int checkPassword(BoardInfoProcessDTO boardInfoProcessDTO);
 }

@@ -108,6 +108,19 @@ public class BoardService {
 
         int cnt = boardMapper.modifyBoard(processDTO);
 
+    /**
+     * 비밀번호 확인
+     * @param processDTO
+     * @return
+     * @throws Exception
+     */
+    public int checkPasword(BoardInfoProcessDTO processDTO) throws Exception {
+
+        int cnt = boardMapper.checkPassword(processDTO);
+
+        return cnt;
+    }
+
         return cnt;
     }
 

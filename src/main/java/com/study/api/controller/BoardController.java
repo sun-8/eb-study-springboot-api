@@ -1,6 +1,7 @@
 package com.study.api.controller;
 
 import com.study.api.config.ErrorDTO;
+import com.study.api.model.in.BoardCheckPasswordInDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardFormUpdateInDTO;
 import com.study.api.model.in.BoardSearchInDTO;
@@ -115,6 +116,26 @@ public class BoardController {
         } catch (Exception e) {
             log.info(e.getMessage());
             throw new Exception(Message.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * 게시판 비밀번호 확인
+     * @param boardCheckPasswordInDTO
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("checkPassword")
+    public ResponseEntity<String> checkPassword(@ModelAttribute BoardCheckPasswordInDTO boardCheckPasswordInDTO) throws Exception {
+
+        BoardMapStruct boardMapStruct = BoardMapStruct.INSTANCE;
+        BoardInfoProcessDTO boardInfoProcessDTO = boardMapStruct.boardCheckPasswordInDtoToBoardInfoProcessDto(boardCheckPasswordInDTO);
+        int cnt = boardService.checkPasword(boardInfoProcessDTO);
+
+        if (cnt == 0) {
+            return ResponseEntity.ok("NO");
+        } else {
+            return ResponseEntity.ok("YES");
         }
     }
 

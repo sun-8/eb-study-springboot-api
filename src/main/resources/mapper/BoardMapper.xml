@@ -118,4 +118,12 @@
         WHERE ID = #{id}
     </update>
 
+    <!-- 비밀번호 확인 -->
+    <select id="checkPassword"
+            resultType="int"
+            parameterType="com.study.api.model.process.BoardInfoProcessDTO">
+        SELECT COUNT(*) FROM BOARD
+        WHERE ID = #{id}
+        AND PASSWORD = #{password}
+    </select>
 </mapper>
