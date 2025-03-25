@@ -1,4 +1,4 @@
-package com.study.util;
+package com.study.api.common.util;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

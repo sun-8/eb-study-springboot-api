@@ -1,6 +1,6 @@
 package com.study.api.controller;
 
-import com.study.api.config.ErrorDTO;
+import com.study.api.common.code.ErrorDTO;
 import com.study.api.model.in.BoardCheckPasswordInDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardFormUpdateInDTO;
@@ -13,7 +13,7 @@ import com.study.api.model.process.BoardInfoProcessDTO;
 import com.study.api.model.process.BoardSearchProcessDTO;
 import com.study.api.service.BoardService;
 import com.study.api.service.CategoryService;
-import com.study.message.Message;
+import com.study.api.common.message.Message;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.study.api.config;
+package com.study.api.common.code;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.study.util;
+package com.study.api.common.util;
 
 import org.springframework.web.multipart.MultipartFile;
 

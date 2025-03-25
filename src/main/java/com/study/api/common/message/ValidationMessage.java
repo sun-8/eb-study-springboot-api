@@ -1,4 +1,4 @@
-package com.study.message;
+package com.study.api.common.message;
 
 public class ValidationMessage {
     public final static String NOTBLANK = "필수 입력값입니다.";

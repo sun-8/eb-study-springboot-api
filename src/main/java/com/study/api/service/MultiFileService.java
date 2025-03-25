@@ -2,8 +2,8 @@ package com.study.api.service;
 
 import com.study.api.mapper.MultiFileMapper;
 import com.study.api.model.process.MultiFileProcessDTO;
-import com.study.util.CommonUtil;
-import com.study.util.FileUtil;
+import com.study.api.common.util.CommonUtil;
+import com.study.api.common.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

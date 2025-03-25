@@ -1,4 +1,4 @@
-package com.study.config;
+package com.study.api.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;

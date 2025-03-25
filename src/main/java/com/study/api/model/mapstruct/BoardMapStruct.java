@@ -1,6 +1,6 @@
 package com.study.api.model.mapstruct;
 
-import com.study.api.config.ErrorDTO;
+import com.study.api.common.code.ErrorDTO;
 import com.study.api.model.in.BoardCheckPasswordInDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardFormUpdateInDTO;
