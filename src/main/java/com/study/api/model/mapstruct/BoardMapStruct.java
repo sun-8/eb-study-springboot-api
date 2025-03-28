@@ -1,6 +1,5 @@
 package com.study.api.model.mapstruct;
 
-import com.study.api.common.code.ErrorDTO;
 import com.study.api.model.in.BoardCheckPasswordInDTO;
 import com.study.api.model.in.BoardFormInsertInDTO;
 import com.study.api.model.in.BoardFormUpdateInDTO;
@@ -11,9 +10,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
-import org.springframework.validation.FieldError;
-
-import java.util.List;
 
 @Mapper
 public interface BoardMapStruct {
@@ -40,14 +36,6 @@ public interface BoardMapStruct {
     default void setLastPageBySearchDataCount(int searchDataCount, @MappingTarget BoardSearchProcessDTO boardSearchProcessDTO) {
         boardSearchProcessDTO.setLastPageBySearchDataCount(searchDataCount);
     }
-
-    // FieldError -> ErrorDTO 변환
-    @Mapping(source = "field", target = "fieldName")
-    @Mapping(source = "defaultMessage", target = "errorMessage")
-    ErrorDTO errorToBoardFormErrorDTOs(FieldError fieldError);
-
-    // List<FieldError> -> List<ErrorDTO> 변환
-    List<ErrorDTO> errorToBoardFormErrorDTOs(List<FieldError> fieldErrors);
 
     // BoardFormInsertInDTO -> BoardInfoProcessDTO 변환
     @Mapping(target = "fileId", ignore = true)
