@@ -33,6 +33,10 @@ public class MultiFileService {
     private String uploadPath;
 
     @Autowired
+    private CommonUtil commonUtil;
+    @Autowired
+    private FileUtil fileUtil;
+    @Autowired
     private MultiFileMapper multiFileMapper;
 
     /**
@@ -49,7 +53,7 @@ public class MultiFileService {
 
         // todo. 파일 업로드 확장자 제한 확인
         // 이미지 파일만 업로드 가능
-        if(FileUtil.vaildImgFile(file)) {
+        if(fileUtil.vaildImgFile(file)) {
             // 파일 정보 셋팅
             multiFileProcessDTO = this.fileInfoSetting(file);
 
@@ -138,7 +142,7 @@ public class MultiFileService {
     public MultiFileProcessDTO fileInfoSetting(MultipartFile file) {
 
         String fileName = file.getOriginalFilename();
-        String fileFolder = CommonUtil.localNowDate("yyyyMMdd");
+        String fileFolder = commonUtil.localNowDate("yyyyMMdd");
         String filePath = uploadPath + fileFolder;
         // 오늘일자 폴더 없으면 생성
         File filePathFolder = new File(filePath);
