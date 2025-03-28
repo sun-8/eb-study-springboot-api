@@ -51,9 +51,8 @@ public class MultiFileService {
         }
         MultiFileProcessDTO multiFileProcessDTO = new MultiFileProcessDTO();
 
-        // todo. 파일 업로드 확장자 제한 확인
-        // 이미지 파일만 업로드 가능
-        if(fileUtil.vaildImgFile(file)) {
+        // 파일 업로드 제한 검증
+        if(fileUtil.validImgFile(file)) {
             // 파일 정보 셋팅
             multiFileProcessDTO = this.fileInfoSetting(file);
 
@@ -63,9 +62,8 @@ public class MultiFileService {
             File saveFile = new File(multiFileProcessDTO.getFilePath(), multiFileProcessDTO.getFileId());
             // 파일 업로드
             file.transferTo(saveFile);
-        } else {
-            throw new Exception();
         }
+
         return multiFileProcessDTO;
     }
 

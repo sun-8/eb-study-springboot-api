@@ -61,7 +61,7 @@ public class BoardService {
         if (processDTO.getMultiFileId() != null) {
             for(MultipartFile file : processDTO.getMultiFileId()) {
                 MultiFileProcessDTO multiFileProcessDTO = multiFileService.imgUpload(file);
-                if (multiFileProcessDTO != null) {
+                if (multiFileProcessDTO != null && multiFileProcessDTO.getFileId() != null) {
                     sb.append(multiFileProcessDTO.getFileId()).append(" | ");
                 }
             }
@@ -98,7 +98,7 @@ public class BoardService {
         if (processDTO.getMultiFileId() != null) {
             for(MultipartFile file : processDTO.getMultiFileId()) {
                 MultiFileProcessDTO multiFileProcessDTO = multiFileService.imgUpload(file);
-                if (multiFileProcessDTO != null) {
+                if (multiFileProcessDTO != null && multiFileProcessDTO.getFileId() != null) {
                     sb.append(multiFileProcessDTO.getFileId()).append(" | ");
                 }
             }

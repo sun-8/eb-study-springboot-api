@@ -1,37 +1,35 @@
 package com.study.api.common.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.StringTokenizer;
+import java.util.List;
 
 @Component
 public class FileUtil {
 
-    @Autowired
-    private CommonUtil commonUtil;
+    private final List<String> FORBIDDEN_EXTENSIONS = List.of("exe", "xls", "xlsx", "pdf");
 
     /**
      * 파일이 image인지 확인
      * @param file
      * @return boolean
      */
-    public boolean vaildImgFile(MultipartFile file) {
-        String fileContentType = file.getContentType();
-        if (!commonUtil.isEmpty(fileContentType)) {
-            StringTokenizer st = new StringTokenizer(fileContentType, "/");
-            String fileType = st.nextToken();
-            String fileExtend = st.nextToken();
-
-            if (fileType.equals("image")) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } else {
+    public boolean validImgFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        if (fileName == null || fileName.isBlank()) {
             return false;
         }
+
+        // 확장자 추출
+        String extension = null;
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex == -1 || lastDotIndex == fileName.length() - 1) {
+            extension = ""; // 확장자가 없는 경우
+        } else {
+            extension = fileName.substring(lastDotIndex + 1);
+        }
+
+        return !FORBIDDEN_EXTENSIONS.contains(extension.toLowerCase());
     }
 }
