@@ -20,13 +20,8 @@ public class CategoryService {
      * @return categoryList
      */
     public List<CategoryListOutDTO> getCategoryAllList() throws Exception {
-        try {
-            List<CategoryListOutDTO> categoryList = categoryMapper.getCategoryAllList();
+        List<CategoryListOutDTO> categoryList = categoryMapper.getCategoryAllList();
 
-            return categoryList;
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            throw new Exception();
-        }
+        return categoryList;
     }
 }
