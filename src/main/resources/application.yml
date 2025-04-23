@@ -4,12 +4,12 @@ server:
 
 spring:
   application:
-    name: boardApi
+    name: sun-shop-api
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ebrainsoft_study
-    username: ebsoft
-    password: ebsoft
+    url: jdbc:mysql://localhost:3306/study
+    username: study
+    password: mystudy00!
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
