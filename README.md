@@ -18,7 +18,7 @@ Spring Boot 기반의 RESTful 쇼핑몰 백엔드 API.
 
 ## ✍ 사용 기술 스택
 - MySQL 8.0 : 관계형 데이터베이스
-- java 17 : 최신 LTS 버전
+- java 17 : LTS 버전
 - SpringBoot : 자동 구성과 내장 서버 기능을 갖춘 프레임워크
 - gradle : 빌드 자동화 도구
 - swagger : API 문서 자동화
